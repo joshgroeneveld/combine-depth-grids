@@ -9,7 +9,7 @@ folder.'''
 
 # Author: Josh Groeneveld
 # Created On: 10.31.2018
-# Updated On: 11.27.2018
+# Updated On: 11.28.2018
 # Copyright: 2018
 
 import arcpy
@@ -19,13 +19,13 @@ from docopt import docopt
 
 # Get the county folder, the larger cell size depth grid folder and the small
 # depth grid folder
-county_folder = r"C:\Scripts\Combine_Depth_Grids\Testing\Kane"
+county_folder = sys.argv[0]
 large_cell_rasters = ""
 small_cell_rasters = []
 if os.path.isdir(os.path.join(county_folder, "Combined")) == False:
     os.mkdir(os.path.join(county_folder, "Combined"))
 mosaic_output_folder = os.path.join(county_folder, "Combined")
-# arcpy.env.workspace = small_cell_rasters
+
 large_cell_size = 0.0
 
 rpd_10_rasters = []
@@ -33,18 +33,6 @@ rpd_25_rasters = []
 rpd_50_rasters = []
 rpd_100_rasters = []
 rpd_500_rasters = []
-# # For raster in small cell size folder
-# # Get the size of the large raster and small raster
-# small_raster_size = arcpy.management.GetRasterProperties(small_cell_rasters + "\\rpd500", "CELLSIZEX")
-# small_raster_size_output = small_raster_size.getOutput(0)
-# print("Small raster size is: " + str(small_raster_size_output))
-#
-# large_raster_size = arcpy.management.GetRasterProperties(large_cell_rasters + "\\rpd500", "CELLSIZEX")
-# large_raster_size_output = large_raster_size.getOutput(0)
-# print("Large raster size is: " + str(large_raster_size_output))
-# # resample (large cell size, nearest neighbor)
-# raster_list = arcpy.ListDatasets('*', "Raster")
-# print(raster_list)
 
 # For all of the subfolders in the county folder, find the folder with the largest
 # raster cell size
