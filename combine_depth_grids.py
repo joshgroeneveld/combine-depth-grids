@@ -1,16 +1,13 @@
-'''This script takes HAZUS-generated depth grids from two separate study regions
-and combines them into one, countywide depth grid for each return period.  This
-script assumes that depth grids have been created for multiple areas within a
-county, generally two halves.  The depth grids from each half are in separate folders
-and the depth grids have slightly different cell sizes.  The script takes depth
-grids for each return period and resamples the smaller cell size rasters to match
-the larger one, then mosaics to new raster the combined depth grid into a new
-folder.'''
+"""
+combine-depth-grids
 
-# Author: Josh Groeneveld
-# Created On: 10.31.2018
-# Updated On: 11.28.2018
-# Copyright: 2018
+Usage:
+    combine_depth_grids.py <county_folder>
+
+Options:
+    -h, --help          Show this screen
+
+"""
 
 import arcpy
 import os
@@ -19,7 +16,7 @@ from docopt import docopt
 
 # Get the county folder, the larger cell size depth grid folder and the small
 # depth grid folder
-county_folder = sys.argv[0]
+county_folder = sys.argv[1]
 large_cell_rasters = ""
 small_cell_rasters = []
 if os.path.isdir(os.path.join(county_folder, "Combined")) == False:
@@ -64,6 +61,23 @@ def raster_with_max_cell_size(raster_cell_size_dictionary):
     k = list(raster_cell_size_dictionary.keys())
     large_cell_subfolder = k[v.index(max(v))]
     large_cell_rasters = os.path.join(county_folder, large_cell_subfolder)
+    # add the large rasters to the lists of rasters to mosaic in the end
+    arcpy.env.workspace = large_cell_rasters
+    large_raster_list = arcpy.ListDatasets('*', "Raster")
+    for large_raster in large_raster_list:
+        return_period = str(large_raster)
+        large_raster_name = os.path.join(large_cell_rasters, large_raster)
+        if return_period == 'rpd10':
+            rpd_10_rasters.append(large_raster_name)
+        elif return_period == 'rpd25':
+            rpd_25_rasters.append(large_raster_name)
+        elif return_period == 'rpd50':
+            rpd_50_rasters.append(large_raster_name)
+        elif return_period == 'rpd100':
+            rpd_100_rasters.append(large_raster_name)
+        else:
+            # return period must be 500
+            rpd_500_rasters.append(large_raster_name)
     global large_cell_size
     large_cell_size = max(v)
     small_cell_rasters.remove(large_cell_subfolder)
@@ -127,3 +141,7 @@ for return_period in return_periods:
     mosaic_rasters(rasters_to_mosaic, return_period)
 
 print("Done")
+
+if __name__ == '__main__':
+    arguments = docopt(__doc__, argv=None, help=True, version=None, options_first=False)
+    print(arguments)
