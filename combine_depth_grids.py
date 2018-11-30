@@ -3,9 +3,12 @@ combine-depth-grids
 
 Usage:
     combine_depth_grids.py <county_folder>
+    combine_depth_grids.py -h | --help
+    combine_depth_grids.py --version
 
 Options:
     -h, --help          Show this screen
+    -- version          Show version
 
 """
 
@@ -88,7 +91,6 @@ raster_with_max_cell_size(raster_cell_size)
 
 # Resmaple all of the rasters in each subfolder that are smaller than the largest cell size
 def resample_rasters(raster, cell_size, direction, return_period, out_folder):
-    print("Large cell size: " + str(cell_size))
     resample_name = os.path.join(out_folder, raster + direction + "re")
     arcpy.management.Resample(in_raster=raster, out_raster=resample_name, cell_size=large_cell_size, resampling_type="NEAREST")
     if return_period == 'rpd10':
@@ -107,7 +109,6 @@ def resample_rasters(raster, cell_size, direction, return_period, out_folder):
 # mosaic to new raster (resampled dg + existing dg from large cell size folder,
 # MAXIMUM, 32-bit float)
 def mosaic_rasters(list_of_rasters_to_mosaic, return_period):
-    print("Mosaicking: " + str(return_period))
     mosaic_name = (return_period + "mosaic")
     arcpy.management.MosaicToNewRaster(input_rasters=list_of_rasters_to_mosaic, output_location=mosaic_output_folder,
         raster_dataset_name_with_extension=mosaic_name, pixel_type="32_BIT_FLOAT", cellsize=large_cell_size,
@@ -143,5 +144,5 @@ for return_period in return_periods:
 print("Done")
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, argv=None, help=True, version=None, options_first=False)
+    arguments = docopt(__doc__, argv=None, help=True, version="Combine Depth Grids 0.2.0", options_first=False)
     print(arguments)
