@@ -21,6 +21,13 @@ def main():
     # Get the county folder, the larger cell size depth grid folder and the small
     # depth grid folder
     county_folder = sys.argv[1]
+    def check_input(county_folder):
+        if os.path.isdir(county_folder) == True:
+            print("Inputs ok...continuing...")
+        if os.path.isdir(county_folder) == False:
+            print("Input must be a folder, exiting...")
+            sys.exit()
+    check_input(county_folder)
     large_cell_rasters = ""
     small_cell_rasters = []
     if os.path.isdir(os.path.join(county_folder, "Combined")) == False:
