@@ -21,15 +21,30 @@ def main():
     # Get the county folder, the larger cell size depth grid folder and the small
     # depth grid folder
     county_folder = sys.argv[1]
+    subfolders = []
+    large_cell_rasters = ""
+    small_cell_rasters = []
     def check_input(county_folder):
+        # First check that the input is a folder and not a file
         if os.path.isdir(county_folder) == True:
-            print("Inputs ok...continuing...")
+            print("Input is a folder...continuing...")
         if os.path.isdir(county_folder) == False:
             print("Input must be a folder, exiting...")
             sys.exit()
+        # Check the input folder to verify that there are subfolders with rasters
+        # For all of the subfolders in the county folder, find the folder with the largest
+        # raster cell size
+        for name in os.listdir(county_folder):
+            if os.path.isdir(os.path.join(county_folder, name)):
+                nonlocal subfolders
+                nonlocal small_cell_rasters
+                subfolders.append(name)
+                small_cell_rasters.append(name)
+        if len(subfolders) < 2:
+            print("There must be at least two subfolders each with rasters, exiting...")
+            sys.exit()
     check_input(county_folder)
-    large_cell_rasters = ""
-    small_cell_rasters = []
+
     if os.path.isdir(os.path.join(county_folder, "Combined")) == False:
         os.mkdir(os.path.join(county_folder, "Combined"))
     mosaic_output_folder = os.path.join(county_folder, "Combined")
@@ -41,14 +56,6 @@ def main():
     rpd_50_rasters = []
     rpd_100_rasters = []
     rpd_500_rasters = []
-
-    # For all of the subfolders in the county folder, find the folder with the largest
-    # raster cell size
-    subfolders = []
-    for name in os.listdir(county_folder):
-        if os.path.isdir(os.path.join(county_folder, name)):
-            subfolders.append(name)
-            small_cell_rasters.append(name)
 
     # Remove subfolder Combined from list (if it exists) because this is where the output is stored
     if 'Combined' in subfolders:
