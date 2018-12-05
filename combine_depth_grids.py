@@ -36,6 +36,12 @@ def main():
         # raster cell size
         for name in os.listdir(county_folder):
             if os.path.isdir(os.path.join(county_folder, name)):
+                if name != "Combined":
+                    arcpy.env.workspace = os.path.join(county_folder, name)
+                    list_of_rasters = arcpy.ListDatasets('*', "Raster")
+                    if len(list_of_rasters) == 0:
+                        print("Folders must contain rasters, exiting...")
+                        sys.exit()
                 nonlocal subfolders
                 nonlocal small_cell_rasters
                 subfolders.append(name)
