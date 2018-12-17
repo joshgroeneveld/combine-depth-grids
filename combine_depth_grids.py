@@ -42,6 +42,10 @@ def main():
                     if len(list_of_rasters) == 0:
                         print("Folders must contain rasters, exiting...")
                         sys.exit()
+                    # Check that subfolders contain 5 rasters, one for each return period
+                    if len(list_of_rasters) != 5:
+                        print("Folders must contain depth grids for return periods 10, 25, 50, 100 and 500, exiting...")
+                        sys.exit()
                 nonlocal subfolders
                 nonlocal small_cell_rasters
                 subfolders.append(name)
